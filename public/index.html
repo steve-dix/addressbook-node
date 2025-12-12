@@ -1,0 +1,70 @@
+<html>
+	<head>
+		<title>Addressbook</title>
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<h2 id="title">Addressbook</h2>
+		<div id="app">
+			<div id="list">
+				<button @click="showform=2">New Entry</button>
+				<table>
+					<thead>
+						<tr><th>Name</th><th>Address</th><th>Phone</th><th>Email</th><th>Page {{page}} of {{maxpage}}</th></tr>
+					</thead>
+					<tbody>
+						<tr v-for="addr in addresses">
+							<td>{{ addr.name }}</td>
+							<td v-html="addr.address"></td>
+							<td>{{ addr.phone }}</td>
+							<td>{{ addr.email }}</td>
+							<td>
+								<button @click="editAddress(addr.addressID)">Edit</button>&nbsp;
+								<button @click="deleteAddress(addr.addressID)">Del</button>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="5">
+								<button class="paging" :disabled="page<2" :class="{'disable-input': disabled}" @click="firstPage()">⇧</button>
+								<button class="paging" :disabled="page<2" :class="{'disable-input': disabled}" @click="previousPage()">⇦</button>
+								<button class="paging" :disabled="page == maxpage" :class="{'disable-input': disabled}" @click="nextPage()">⇨</button>
+								<button class="paging" :disabled="page == maxpage" :class="{'disable-input': disabled}" @click="lastPage()">⇩</button>
+							</th>
+						</tr>								
+					</tfoot>
+				</table>
+				
+			</div>
+			<div id="form" v-if="showform">
+				<div id="formblock">
+					<fieldset id="errors" v-if="errors.length">
+						<legend>Errors</legend>
+						<span v-for="err in errors">
+							{{err.msg}}<br/>
+						</span>
+					</fieldset>
+					<fieldset id="formstyle">
+						<legend>Address</legend>
+						<form v-on:submit.prevent="if(showform==1) submitAddress(address); else postAddress(address);">
+							<input type="hidden" name="addressID" v-model="address.addressID"/>
+							<label>Name</label><br/>
+							<input type="text" v-model="address.name" placeholder="Your Name"/><br/>
+							<label>Address</label><br/>
+							<textarea v-model="address.address" rows=8 cols=30></textarea><br/>
+							<label>Phone</label><br/>
+							<input type="text" v-model="address.phone" placeholder="Your phone number"/><br/>
+							<label>Email</label><br/>
+							<input type="text" v-model="address.email" placeholder="Your email" v-bind:class="emailClass" /><br/>
+							<button type="submit">Submit</button><button type="cancel" @click="showform=false">Cancel</button>
+						</form>
+					</fieldset>
+				</div>
+			</div>
+		</div>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="./js/addressbook.js"></script>
+	</body>
+</html>
